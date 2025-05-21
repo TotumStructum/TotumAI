@@ -4,6 +4,7 @@ from model import TotumSeq2Seq
 import torch.nn.functional as F
 import uvicorn
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
 # === Завантаження словників і моделі ===
 word2idx = torch.load("app/word2idx.pth")
@@ -46,6 +47,15 @@ def generate_reply(input_text):
 
 # === FastAPI ===
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/chat/{user_id}")
 async def chat(user_id: str, request: Request):

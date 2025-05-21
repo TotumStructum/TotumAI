@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TotumAI Тест</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        height: 100vh;
+        margin: 0;
+      }
+      .chat-container {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+      }
+      .log-container {
+        flex: 1;
+        background: #f4f4f4;
+        padding: 20px;
+        border-left: 1px solid #ccc;
+        overflow-y: auto;
+      }
+      #messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      .message {
+        margin: 5px 0;
+      }
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        width: 80%;
+      }
+      button {
+        padding: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <h2>TotumAI Чат</h2>
+      <div id="messages"></div>
+      <input type="text" id="input" placeholder="Напиши повідомлення..." />
+      <button onclick="sendMessage()">Надіслати</button>
+    </div>
+    <div class="log-container">
+      <h3>Логи</h3>
+      <div id="log"></div>
+    </div>
+
+    <script>
+      async function sendMessage() {
+        const input = document.getElementById("input");
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage("🧑: " + message);
+
+        const start = Date.now();
+        log(`🔵 [${new Date().toLocaleTimeString()}] Відправка: "${message}"`);
+
+        try {
+          const res = await fetch("http://localhost:7300/chat/user1", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message }),
+          });
+
+          const elapsed = Date.now() - start;
+          const size = res.headers.get("content-length") || "unknown";
+          const status = res.status;
+
+          if (!res.ok) throw new Error(`HTTP ${status}`);
+
+          const data = await res.json();
+          addMessage("🤖: " + data.reply);
+
+          log(
+            `🟢 [${new Date().toLocaleTimeString()}] Відповідь (${status}) за ${elapsed}мс, розмір ${size} байт`
+          );
+          log(`     🔁 "${data.reply}"`);
+        } catch (err) {
+          const elapsed = Date.now() - start;
+          log(
+            `🔴 [${new Date().toLocaleTimeString()}] ПОМИЛКА за ${elapsed}мс: ${
+              err.message
+            }`
+          );
+        }
+
+        input.value = "";
+      }
+
+      function addMessage(text) {
+        const div = document.createElement("div");
+        div.className = "message";
+        div.textContent = text;
+        document.getElementById("messages").appendChild(div);
+      }
+
+      function log(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        document.getElementById("log").appendChild(div);
+      }
+    </script>
+  </body>
+</html>
