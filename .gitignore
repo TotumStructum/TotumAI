@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test / temp files
+*.tmp
+*.bak
+*.swp
+*.out
+
+# Logs and debug
+*.log
+debug.log
+logs/
+
+# MyPy / Pyright / Pylint
+.mypy_cache/
+.pyright/
+.pytest_cache/
+
+# Models / checkpoints
+checkpoints/
+models/
+*.pt
+*.pth
+
+# Data
+data/raw/
+data/tmp/
+
